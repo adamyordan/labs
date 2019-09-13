@@ -14,3 +14,8 @@ h1, h2, h3, h4, h5, h6 {
 .post-title, div.archive > h1 {
     padding-top: 0;
 }
+
+.post-content {
+    overflow-wrap: break-word;
+    word-wrap: break-word;  
+}

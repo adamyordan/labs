@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Adam&#39;s Labs</title>
+    <link>/posts/</link>
+    <description>Recent content in Posts on Adam&#39;s Labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 13 Sep 2019 19:23:04 +0800</lastBuildDate>
+    
+	<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Artificial Consciousness</title>
+      <link>/posts/artificial-consciousness/</link>
+      <pubDate>Fri, 13 Sep 2019 19:23:04 +0800</pubDate>
+      
+      <guid>/posts/artificial-consciousness/</guid>
+      <description>This is a placeholder for the first post in this blog. This placeholder marks the starting point of one project: Artificial Consciousness.
+Artificial consciousness (AC) is a field related to artificial intelligence and cognitive robotics. The aim of the theory of artificial consciousness is to &amp;ldquo;Define that which would have to be synthesized were consciousness to be found in an engineered artifact&amp;rdquo; (Aleksander 1995).
+Artificial consciousness concepts are also pondered in the philosophy of artificial intelligence through questions about mind, consciousness, and mental states.</description>
+    </item>
+    
+  </channel>
+</rss>

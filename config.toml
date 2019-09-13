@@ -1,0 +1,40 @@
+baseurl = "/"
+languageCode = "en-us"
+theme = "hello-friend"
+paginate = 5
+
+[params]
+  contentTypeName = "posts"
+  defaultTheme = "dark"
+  showMenuItems = 2
+  showReadingTime = true
+
+[languages]
+  [languages.en]
+    title = "Adam's Labs"
+    subtitle = "A human's attempt to enhance humanity"
+    keywords = ""
+    copyright = ""
+    menuMore = "Show more"
+    writtenBy = "Written by"
+    readMore = "Read more"
+    readOtherPosts = "Read other posts"
+    newerPosts = "Newer posts"
+    olderPosts = "Older posts"
+    minuteReadingTime = "min read"
+    dateFormatSingle = "02-01-2006"
+    dateFormatList = "02-01-2006"
+
+    [languages.en.params.logo]
+      logoText = "Project:Labs"
+      logoHomeLink = "/"
+
+    [languages.en.menu]
+      [[languages.en.menu.main]]
+        identifier = "about"
+        name = "About"
+        url = "/about"
+      [[languages.en.menu.main]]
+        identifier = "showcase"
+        name = "Archive"
+        url = "/archive"

@@ -6,10 +6,22 @@
     <description>Recent content in ArtificialConsciousness on Project:Labs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 14 Sep 2019 13:44:52 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 16 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://labs.adamjordan.id/tags/artificialconsciousness/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Creating Simple Intelligent Agent: HunterAI</title>
+      <link>https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/</link>
+      <pubDate>Mon, 16 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/</guid>
+      <description>Today&amp;rsquo;s Goal In this article, I will try to make an intelligent agent that can hunt monster. I name this agent: Hunter.
+Defining &amp;ldquo;Agent&amp;rdquo; How can we build something if we do not what it is?
+What is Agent? Agent is anything that can be viewed as: perceiving environment through sensors; and acting upon environment through actuators. It will run in cycles of perceiving, thinking, and acting.
+What is an Intelligent Agent?</description>
+    </item>
     
     <item>
       <title>The Easy Problems of Consciousness</title>

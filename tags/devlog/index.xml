@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Devlog on Project:Labs</title>
+    <link>https://labs.adamjordan.id/tags/devlog/</link>
+    <description>Recent content in Devlog on Project:Labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 16 Sep 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://labs.adamjordan.id/tags/devlog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Creating Simple Intelligent Agent: HunterAI</title>
+      <link>https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/</link>
+      <pubDate>Mon, 16 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/</guid>
+      <description>Today&amp;rsquo;s Goal In this article, I will try to make an intelligent agent that can hunt monster. I name this agent: Hunter.
+Defining &amp;ldquo;Agent&amp;rdquo; How can we build something if we do not what it is?
+What is Agent? Agent is anything that can be viewed as: perceiving environment through sensors; and acting upon environment through actuators. It will run in cycles of perceiving, thinking, and acting.
+What is an Intelligent Agent?</description>
+    </item>
+    
+  </channel>
+</rss>

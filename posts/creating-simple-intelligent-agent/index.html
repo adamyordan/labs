@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Creating Simple Intelligent Agent: HunterAI :: Project:Labs — A human&#39;s attempt to enhance humanity</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Today&amp;rsquo;s Goal In this article, I will try to make an intelligent agent that can hunt monster. I name this agent: Hunter.
+Defining &amp;ldquo;Agent&amp;rdquo; How can we build something if we do not what it is?
+What is Agent? Agent is anything that can be viewed as: perceiving environment through sensors; and acting upon environment through actuators. It will run in cycles of perceiving, thinking, and acting.
+What is an Intelligent Agent?"/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://labs.adamjordan.id/assets/style.css">
+
+
+<link rel="stylesheet" href="https://labs.adamjordan.id/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://labs.adamjordan.id/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://labs.adamjordan.id/img/favicon.png">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Creating Simple Intelligent Agent: HunterAI"/>
+<meta name="twitter:description" content="Today, I try to make an intelligent agent that can hunt monster. I name this agent: **Hunter**. In this devlog, I will write the understanding and design process of a very simple intelligent agent."/>
+
+
+
+<meta property="og:title" content="Creating Simple Intelligent Agent: HunterAI" />
+<meta property="og:description" content="Today, I try to make an intelligent agent that can hunt monster. I name this agent: **Hunter**. In this devlog, I will write the understanding and design process of a very simple intelligent agent." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/" />
+<meta property="article:published_time" content="2019-09-16T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-09-16T00:00:00+00:00" /><meta property="og:site_name" content="Project:Labs" />
+
+
+
+
+
+
+  </head>
+  <body class="">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">Project:Labs</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/archive">Archive</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/archive">Archive</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  <div class="post">
+    <h2 class="post-title"><a href="https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/">Creating Simple Intelligent Agent: HunterAI</a></h2>
+    <div class="post-meta">
+      
+        <span class="post-date">
+            16-09-2019
+        </span>
+      
+      <span class="post-author">— Written by Adam Jordan</span>
+      
+        <span class="post-read-time">— 5 min read</span>
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          #<a href="https://labs.adamjordan.id/tags/artificialconsciousness/">ArtificialConsciousness</a>&nbsp;
+        
+          #<a href="https://labs.adamjordan.id/tags/artificialintelligence/">ArtificialIntelligence</a>&nbsp;
+        
+          #<a href="https://labs.adamjordan.id/tags/devlog/">Devlog</a>&nbsp;
+        
+          #<a href="https://labs.adamjordan.id/tags/hunterai/">HunterAI</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+
+<h2 id="today-s-goal">Today&rsquo;s Goal</h2>
+
+<p>In this article, I will try to make an intelligent agent that can hunt monster.
+I name this agent: <strong>Hunter</strong>.</p>
+
+<h2 id="defining-agent">Defining &ldquo;Agent&rdquo;</h2>
+
+<p>How can we build something if we do not what it is?</p>
+
+<p><strong><em>What is Agent?</em></strong>
+Agent is anything that can be viewed as: <strong>perceiving</strong> environment through <strong>sensors</strong>; and <strong>acting</strong> upon environment through <strong>actuators</strong>.
+It will run in <strong>cycles</strong> of perceiving, thinking, and acting.</p>
+
+<p><strong><em>What is an Intelligent Agent?</em></strong>
+An agent that acts in a manner that causes it to be as <em>successful</em> as it can.
+This agent acts in a way that is expected to <strong>maximise</strong> to its <strong>performance measure</strong>, given the <em>evidence</em> provided by what it perceived and whatever <em>built-in knowledge</em> it has.
+The <strong>performance measure</strong> defines the criterion of success for an agent.</p>
+
+<h2 id="designing-an-intelligent-agent">Designing an Intelligent Agent</h2>
+
+<p>Okay, we already understand what an intelligent agent is. Now, how do we start designing the agent?</p>
+
+<p>When designing an intelligent agent, we can describe the agent by defining <em>(PEAS Descriptors)s</em>:</p>
+
+<ul>
+<li><strong>P</strong>erformance &ndash; how we measure the agent&rsquo;s achievements</li>
+<li><strong>E</strong>nvironment &ndash; what is the agent is interacting with</li>
+<li><strong>A</strong>ctuator &ndash; what produces the outputs of the agent</li>
+<li><strong>S</strong>ensor &ndash; what provides the inputs to the agent</li>
+</ul>
+
+<p>Alternatively, we can desribe the agent by defining <em>(PAGE Descriptor)</em>:</p>
+
+<ul>
+<li><strong>P</strong>ercepts &ndash; the inputs to our system</li>
+<li><strong>A</strong>ctions &ndash; the outputs of our system</li>
+<li><strong>G</strong>oals &ndash; what the agent is expected to achieve</li>
+<li><strong>E</strong>nvironment &ndash; what the agent is interacting with</li>
+</ul>
+
+<p>Formally, we can define structure of an Agent as:</p>
+
+<p>$$Agent = Architecture + Program$$</p>
+
+<p><strong>Architecture</strong>: a device with sensors and actuators.</p>
+
+<p><strong>Agent Program</strong>: a program implementing <em>Agent Function</em> $f$ on top an architecture, where <strong>Agent Function</strong>: a function that maps a <strong>sequence of perceptions</strong> into <strong>action</strong>.</p>
+
+<p>$$f(P) = A$$</p>
+
+<h2 id="designing-hunter-ai">Designing Hunter AI</h2>
+
+<p>I will try to build <strong>Hunter</strong> as an intelligent agent that will shoot an arrow when it find a monster.</p>
+
+<p>Let&rsquo;s describe <strong>Hunter</strong> with <em>PEAS Descriptor</em>:</p>
+
+<ul>
+<li><strong>P</strong>erformance: Able to kill all monsters.</li>
+<li><strong>E</strong>nvironment: A battefield filled with monsters.</li>
+<li><strong>A</strong>ctuator: Hunter&rsquo;s bow</li>
+<li><strong>S</strong>ensor: Hunter&rsquo;s vision</li>
+</ul>
+
+<h2 id="let-s-make-a-framework">Let&rsquo;s make a Framework</h2>
+
+<p>First, let&rsquo;s start by making a simple abstract framework implementing the above concepts.</p>
+
+<pre><code class="language-python"># framework.py
+
+class Action:
+    def __init__(self, id):
+        self.id = id
+
+
+class Perception:
+    def __init__(self, id, value):
+        self.id = id
+        self.value = value
+
+
+class Environment:
+    def __init__(self):
+        pass
+
+    def acted_upon(self, action):
+        pass
+
+    def step(self):
+        pass
+
+    def update(self, state):
+        pass
+
+
+class Architecture:
+    def __init__(self, environment):
+        self.environment = environment
+
+    def act(self, action):
+        '''
+        actuator function
+        '''
+        self.environment.acted_upon(action)
+
+    def perceive(self):
+        '''
+        sensors function
+        '''
+        raise NotImplementedError()
+
+
+class Agent:
+    def __init__(self, architecture):
+        self.architecture = architecture
+    
+    def process(self, perceptions):
+        '''
+        agent function, return Action
+        '''
+        pass
+
+    def step(self):
+        perceptions = self.architecture.perceive()
+        action = self.process(perceptions)
+        if action:
+            self.architecture.act(action)
+
+
+class World:
+    def __init__(self, environment, agents):
+        self.time = 0
+        self.environment = environment
+        self.agents = agents
+
+    def step(self):
+        self.time += 1
+        self.environment.step()
+        for agent in self.agents:
+            agent.step()
+</code></pre>
+
+<h2 id="let-s-start-simple">Let&rsquo;s start simple</h2>
+
+<p>Next, let&rsquo;s try implementing our <strong>Hunter</strong> world using this framework.
+Because this is our first attempt, let&rsquo;s simplify things:</p>
+
+<ul>
+<li>There is one monster in battlefield.</li>
+<li>We only care about the monster visibility. We don&rsquo;t care about its position.</li>
+<li>When a monster appears / visible, hunter will react by shooting it.</li>
+<li>When a monster got hit, it will disappear.</li>
+</ul>
+
+<p>I know that this looks oversimplified and seems very easy.
+But this is important as our building foundation.</p>
+
+<p>First, Let&rsquo;s define the action: <strong>Shooting action</strong>.</p>
+
+<pre><code class="language-python"># hunterAI.py
+
+from framework import Action, Perception, Environment, Architecture, Agent, World
+
+ACTION_SHOOT = Action('shoot')
+</code></pre>
+
+<p>Next, let&rsquo;s define the environment.
+As with our simplification, there is only one state: <code>monster_visible</code>.
+If <code>ACTION_SHOOT</code> is acted upon this environment, the monster will disappear, thus setting <code>monster_visible</code> to <code>False</code>.</p>
+
+<pre><code class="language-python">class HunterEnv(Environment):
+    def __init__(self):
+        self.monster_visible = False
+
+    def acted_upon(self, action):
+        if action == ACTION_SHOOT:
+            print('[+] Pew! Hunter shoots the monster')
+            self.update({ 'monster_visible': False })
+
+    def update(self, state):
+        if 'monster_visible' in state:
+            self.monster_visible = state['monster_visible']
+</code></pre>
+
+<p>Next, let&rsquo;s define our agent architecture.
+There is nothing changet at actuator function.
+For the sensor function, we need to parse the <code>monster_visible</code> state from our environment.
+This state is the perception that will be passed to our agent program.</p>
+
+<pre><code class="language-python">class HunterArch(Architecture):
+    def perceive(self):
+        monster_visible = self.environment.monster_visible
+        return [Perception('monster_visible', monster_visible)]
+</code></pre>
+
+<p>Finally, let&rsquo;s define our agent program.
+As will our simplification, when the agent perceives that a monster is visible, it will do shooting action.</p>
+
+<pre><code class="language-python">class HunterAgent(Agent):
+    def process(self, perceptions):
+        if len(perceptions) == 0:
+            return None
+        perception = perceptions[0]
+        if perception.id == 'monster_visible' and perception.value == True:
+            return ACTION_SHOOT
+        else:
+            return None
+</code></pre>
+
+<p>And some helpers function:</p>
+
+<pre><code class="language-python">def initiate():
+    print('[+] Creating environment')
+    env = HunterEnv()
+
+    print('[+] Creating architecture')
+    arch = HunterArch(environment=env)
+
+    print('[+] Creating agent')
+    hunter = HunterAgent(architecture=arch)
+
+    print('[+] Creating world')
+    world = World(environment=env, agents=[hunter])
+
+    return world, hunter
+
+
+def debug(world):
+    print('[+] DEBUG: ({}) monster_visible: {}'.format(world.time, world.environment.monster_visible))
+</code></pre>
+
+<h2 id="running-our-agent">Running our agent</h2>
+
+<p>Now that we finished programming our intelligent agent, let&rsquo;s run and play around with it.</p>
+
+<p>Spawn a python interpreter, and import our <code>hunterAI.py</code> programs.</p>
+
+<pre><code class="language-python">$ python3
+
+&gt;&gt;&gt; from hunterAI import *
+
+&gt;&gt;&gt; world, hunter = initiate()
+[+] Creating environment
+[+] Creating architecture
+[+] Creating agent
+[+] Creating world
+
+&gt;&gt;&gt; debug(world)
+[+] DEBUG: (0) monster_visible: False
+</code></pre>
+
+<p>We step one time unit period in our program by calling <code>world.step()</code>.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; world.step()
+
+&gt;&gt;&gt; debug(world)
+[+] DEBUG: (1) monster_visible: False
+</code></pre>
+
+<p>Let&rsquo;s try updating the environment.
+We want to see if our agent react accordingly when a monster appears.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; debug(world)
+[+] DEBUG: (1) monster_visible: False
+
+&gt;&gt;&gt; world.environment.update({ 'monster_visible': True })
+
+&gt;&gt;&gt; debug(world)
+[+] DEBUG: (1) monster_visible: True
+</code></pre>
+
+<p>After running step, we will see that our <strong>Hunter</strong> should shoot the monster.</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; debug(world)
+[+] DEBUG: (1) monster_visible: True
+
+&gt;&gt;&gt; world.step()
+[+] Pew! Hunter shoots the monster
+
+&gt;&gt;&gt; debug(world)
+[+] DEBUG: (2) monster_visible: False
+</code></pre>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Today, we learned about Intelligent agent and we have built a very simple intelligent agent.
+In the future, we will try to extend this agent to have more advanced features.
+I will also try to create a visualization for this agent.
+While it seems to be still far, this is my first step towards creating an Artificial Consciousness.</p>
+
+<h2 id="references">References</h2>
+
+<ul>
+<li><a href="https://hackernoon.com/rational-agents-for-artificial-intelligence-caf94af2cec5">https://hackernoon.com/rational-agents-for-artificial-intelligence-caf94af2cec5</a></li>
+<li><a href="https://www.geeksforgeeks.org/agents-artificial-intelligence/">https://www.geeksforgeeks.org/agents-artificial-intelligence/</a></li>
+<li><a href="http://www.cs.bham.ac.uk/~jxb/IAI/w4.pdf">http://www.cs.bham.ac.uk/~jxb/IAI/w4.pdf</a></li>
+</ul>
+
+    </div>
+    
+      <div class="pagination">
+        <div class="pagination__title">
+          <span class="pagination__title-h">Read other posts</span>
+          <hr />
+        </div>
+        <div class="pagination__buttons">
+          
+          
+            <span class="button next">
+              <a href="https://labs.adamjordan.id/posts/the-easy-problems-of-consciousness/">
+                <span class="button__text">The Easy Problems of Consciousness</span>
+                <span class="button__icon">→</span>
+              </a>
+            </span>
+          
+        </div>
+      </div>
+    
+
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a href="/" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg>
+</span>
+    <span class="logo__text">Project:Labs</span>
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span>© 2019 Powered by <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span>
+        <span>Theme created by <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span>
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://labs.adamjordan.id/assets/main.js"></script>
+<script src="https://labs.adamjordan.id/assets/prism.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        displayMath: [['$$','$$'], ['\[','\]']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+            extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+});
+</script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

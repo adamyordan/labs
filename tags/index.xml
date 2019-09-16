@@ -6,7 +6,7 @@
     <description>Recent content in Tags on Project:Labs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 14 Sep 2019 13:44:52 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 16 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://labs.adamjordan.id/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,36 @@
     <item>
       <title>ArtificialConsciousness</title>
       <link>https://labs.adamjordan.id/tags/artificialconsciousness/</link>
-      <pubDate>Sat, 14 Sep 2019 13:44:52 +0800</pubDate>
+      <pubDate>Mon, 16 Sep 2019 00:00:00 +0000</pubDate>
       
       <guid>https://labs.adamjordan.id/tags/artificialconsciousness/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ArtificialIntelligence</title>
+      <link>https://labs.adamjordan.id/tags/artificialintelligence/</link>
+      <pubDate>Mon, 16 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://labs.adamjordan.id/tags/artificialintelligence/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Devlog</title>
+      <link>https://labs.adamjordan.id/tags/devlog/</link>
+      <pubDate>Mon, 16 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://labs.adamjordan.id/tags/devlog/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HunterAI</title>
+      <link>https://labs.adamjordan.id/tags/hunterai/</link>
+      <pubDate>Mon, 16 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://labs.adamjordan.id/tags/hunterai/</guid>
       <description></description>
     </item>
     

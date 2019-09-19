@@ -2,6 +2,7 @@
 title: "About"
 date: 2019-09-14T00:23:56+08:00
 draft: false
+disqus: false
 ---
 
 This blog will be used to write down various things regarding **Project:Labs**.

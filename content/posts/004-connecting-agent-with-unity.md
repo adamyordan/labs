@@ -4,7 +4,7 @@ author: "Adam Jordan"
 date: 2019-09-19
 description: "Today, I will try to create a 3d visualization using Unity and connect it to our agent written in python. In this devlog, I will write the remote communication module and also the updated AI concepts to support remote functionality."
 tags: [ArtificialConsciousness, ArtificialIntelligence, Unity, Devlog, HunterAI]
-draft: true
+draft: false
 ---
 
 

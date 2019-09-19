@@ -13,6 +13,7 @@ draft: false
 
 In this article, I will try to make an intelligent agent that can hunt monster.
 I name this agent: **Hunter**.
+(_In the future, today's version will be referenced as **Alexander**_)
 
 
 ## Defining "Agent"
@@ -61,6 +62,70 @@ $$Agent = Architecture + Program$$
 $$f(P) = A$$
 
 
+## Agent Interaction Concept
+
+I propose a concept idea of agent interaction as follow:
+
+* Agent is represented as $\langle Program, Architecture \rangle$.
+
+* Architecture is responsible for **perceiving** environment through **sensors** and **acting** upon environment through **actuators**.
+
+* *Percept* perceived by architecture is then passed to Agent Program.
+According to agent function, Agent Program then map the *percept* to an *action*.
+*Action* is then passed to Architecture.
+
+* Environment is a representation that will be perceived and acted upon by architecture.
+
+* Action is represented as $\langle id \rangle$, where $id$ is used to identify the type of the action.
+
+* Percept is represented as $\langle state \rangle$, where $state$ is a key-value map containing the information perceived by sensor.
+
+
+Let's start by making a simple abstract code implementing the above concepts.
+
+```python
+# concepts.py
+
+class Environment:
+    pass
+
+
+class Action:
+    def __init__(self, id):
+        self.id = id
+
+
+class Percept:
+    def __init__(self, state):
+        self.state = state
+
+
+class Architecture:
+    def perceive(self, environment):
+        raise NotImplementedError()
+
+    def act(self, environment, action):
+        raise NotImplementedError()
+
+
+class Program:
+    def process(self, percept):
+        raise NotImplementedError()
+
+
+class Agent:
+    def __init__(self, program, architecture):
+        self.program = program
+        self.architecture = architecture
+
+    def step(self, environment):
+        percept = self.architecture.perceive(environment)
+        action = self.program.process(percept)
+        if action:
+            self.architecture.act(environment, action)
+
+```
+
 ## Designing Hunter AI
 
 I will try to build **Hunter** as an intelligent agent that will shoot an arrow when it find a monster.
@@ -73,205 +138,157 @@ Let's describe **Hunter** with _PEAS Descriptor_:
 * **S**ensor: Hunter's vision
 
 
-## Let's make a Framework
-
-First, let's start by making a simple abstract framework implementing the above concepts.
-
-```python
-# framework.py
-
-class Action:
-    def __init__(self, id):
-        self.id = id
-
-
-class Perception:
-    def __init__(self, id, value):
-        self.id = id
-        self.value = value
-
-
-class Environment:
-    def __init__(self):
-        pass
-
-    def acted_upon(self, action):
-        pass
-
-    def step(self):
-        pass
-
-    def update(self, state):
-        pass
-
-
-class Architecture:
-    def __init__(self, environment):
-        self.environment = environment
-
-    def act(self, action):
-        '''
-        actuator function
-        '''
-        self.environment.acted_upon(action)
-
-    def perceive(self):
-        '''
-        sensors function
-        '''
-        raise NotImplementedError()
-
-
-class Agent:
-    def __init__(self, architecture):
-        self.architecture = architecture
-    
-    def process(self, perceptions):
-        '''
-        agent function, return Action
-        '''
-        pass
-
-    def step(self):
-        perceptions = self.architecture.perceive()
-        action = self.process(perceptions)
-        if action:
-            self.architecture.act(action)
-
-
-class World:
-    def __init__(self, environment, agents):
-        self.time = 0
-        self.environment = environment
-        self.agents = agents
-
-    def step(self):
-        self.time += 1
-        self.environment.step()
-        for agent in self.agents:
-            agent.step()
-```
-
 ## Let's start simple
 
-Next, let's try implementing our **Hunter** world using this framework.
+Let's try implementing our **Hunter** as a simple reflex agent.
 Because this is our first attempt, let's simplify things:
 
 * There is one monster in battlefield.
 * We only care about the monster visibility. We don't care about its position.
-* When a monster appears / visible, hunter will react by shooting it.
+* When a monster is visible, hunter will react by shooting it.
 * When a monster got hit, it will disappear.
 
 I know that this looks oversimplified and seems very easy.
 But this is important as our building foundation.
 
 
-First, Let's define the action: **Shooting action**.
+First, let's define our environment.
+According to our simplification, there is only one state attribute: `monster_visible`.
 
 ```python
-# hunterAI.py
+# environment.py
 
-from framework import Action, Perception, Environment, Architecture, Agent, World
+from .concepts import Environment
 
-ACTION_SHOOT = Action('shoot')
-```
 
-Next, let's define the environment.
-As with our simplification, there is only one state: `monster_visible`.
-If `ACTION_SHOOT` is acted upon this environment, the monster will disappear, thus setting `monster_visible` to `False`.
-
-```python
-class HunterEnv(Environment):
+class HunterEnvironment(Environment):
     def __init__(self):
         self.monster_visible = False
-
-    def acted_upon(self, action):
-        if action == ACTION_SHOOT:
-            print('[+] Pew! Hunter shoots the monster')
-            self.update({ 'monster_visible': False })
-
-    def update(self, state):
-        if 'monster_visible' in state:
-            self.monster_visible = state['monster_visible']
 ```
 
-Next, let's define our agent architecture.
-There is nothing changet at actuator function.
-For the sensor function, we need to parse the `monster_visible` state from our environment.
-This state is the perception that will be passed to our agent program.
+
+Next, let's define our Hunter's Agent program.
+According to our simplification, when the agent perceives that a monster is visible, it will do shooting action.
 
 ```python
-class HunterArch(Architecture):
-    def perceive(self):
-        monster_visible = self.environment.monster_visible
-        return [Perception('monster_visible', monster_visible)]
-```
+# program.py
 
-Finally, let's define our agent program.
-As will our simplification, when the agent perceives that a monster is visible, it will do shooting action.
+from .concepts import Action, Program
 
-```python
-class HunterAgent(Agent):
-    def process(self, perceptions):
-        if len(perceptions) == 0:
-            return None
-        perception = perceptions[0]
-        if perception.id == 'monster_visible' and perception.value == True:
-            return ACTION_SHOOT
+
+class HunterProgram(Program):
+    def process(self, percept):
+        if percept.state['monster_visible'] is True:
+            return Action('shoot')
         else:
             return None
 ```
 
-And some helpers function:
+Next, let's define our Architecture.
+Perceiving is simple, it will check the `monster_visible` attribute of the environment.
+If shooting action is acted upon this environment, the monster will disappear, thus setting `monster_visible` to `False`.
+
 ```python
-def initiate():
-    print('[+] Creating environment')
-    env = HunterEnv()
+# architecture.py
 
-    print('[+] Creating architecture')
-    arch = HunterArch(environment=env)
-
-    print('[+] Creating agent')
-    hunter = HunterAgent(architecture=arch)
-
-    print('[+] Creating world')
-    world = World(environment=env, agents=[hunter])
-
-    return world, hunter
+from .concepts import Architecture, Percept
+import logging
 
 
-def debug(world):
-    print('[+] DEBUG: ({}) monster_visible: {}'.format(world.time, world.environment.monster_visible))
+class HunterArchitecture(Architecture):
+    def perceive(self, environment):
+        return Percept({'monster_visible': environment.monster_visible})
+
+    def act(self, environment, action):
+        if action.id == 'shoot':
+            logging.debug('Pew! Shooting monster')
+            environment.monster_visible = False
+```
+
+So far, we have already finished implementing our agent program and architecure.
+And this is sufficient to say that we already finished implementing our agent.
+Our agent can be instantiated with the following code:
+
+```python
+program = HunterProgram()
+architecture = HunterArchitecture()
+agent = Agent(program, architecture)
 ```
 
 
-## Running our agent
+However, currently we don't have any way to run and test our agent.
+Let's make a simulator to run this agent.
 
-Now that we finished programming our intelligent agent, let's run and play around with it.
+```python
+# simulator.py
 
-Spawn a python interpreter, and import our `hunterAI.py` programs.
+from .concepts import Agent
+from .architecture import HunterArchitecture
+from .program import HunterProgram
+from .environment import HunterEnvironment
+import logging
+import os
+import time
+
+
+class Simulator:
+    def __init__(self, environment, agents):
+        self.environment = environment
+        self.agents = agents
+        self.time = 0
+
+    def step(self):
+        for agent in self.agents:
+            agent.step(self.environment)
+        self.time += 1
+
+    def debug(self):
+        logging.debug('monster_visible is %s', self.environment.monster_visible)
+
+    @staticmethod
+    def instantiate():
+        environment = HunterEnvironment()
+
+        program = HunterProgram()
+        architecture = HunterArchitecture()
+        agent = Agent(program, architecture)
+
+        return Simulator(environment, [agent])
+```
+
+Our simulator class represents a _world_ where our agent is running.
+As you may realize, We have not yet defined what a _world_ is.
+Let's define **world** as a triplet $\langle time, environment, agents \rangle$, where $time$ is an increasing number that represents a moment in the world.
+A *world* contains an $environment$ and a list of agent ($agents$) that will interact with the environment.
+
+A moment in the world can be moved forward by calling `step()` function.
+When stepping, the agents will start processing the environment, perceiving and acting upon it; and the time will increase.
+
+## Running our agent with simulator
+
+Now that we finished programming our intelligent agent and simulator, let's run and play around with them.
+
+Spawn a python interpreter, and import our `simulator.py` programs.
 
 ```python
 $ python3
 
->>> from hunterAI import *
+>>> from simulator import *
 
->>> world, hunter = initiate()
-[+] Creating environment
-[+] Creating architecture
-[+] Creating agent
-[+] Creating world
+>>> logging.basicConfig(level='DEBUG')
 
->>> debug(world)
-[+] DEBUG: (0) monster_visible: False
+>>> simulator = Simulator.instantiate()
+
+>>> simulator.debug()
+DEBUG:root:[time:0] monster_visible is False
 ```
 
-We step one time unit period in our program by calling `world.step()`.
+We step one time unit period in our world simulator by calling `simulator.step()`.
 ```python
->>> world.step()
+>>> simulator.step()
 
 >>> debug(world)
-[+] DEBUG: (1) monster_visible: False
+DEBUG:root:[time:1] monster_visible is False
 ```
 
 Let's try updating the environment.
@@ -279,25 +296,25 @@ We want to see if our agent react accordingly when a monster appears.
 
 ```python
 >>> debug(world)
-[+] DEBUG: (1) monster_visible: False
+DEBUG:root:[time:1] monster_visible is False
 
->>> world.environment.update({ 'monster_visible': True })
+>>> simulator.environment.monster_visible = True
 
 >>> debug(world)
-[+] DEBUG: (1) monster_visible: True
+DEBUG:root:[time:1] monster_visible is True
 ```
 
 After running step, we will see that our **Hunter** should shoot the monster.
 
 ```python
 >>> debug(world)
-[+] DEBUG: (1) monster_visible: True
+DEBUG:root:[time:1] monster_visible is False
 
->>> world.step()
-[+] Pew! Hunter shoots the monster
+>>> simulator.step()
+DEBUG:root:Pew! Shooting monster
 
 >>> debug(world)
-[+] DEBUG: (2) monster_visible: False
+DEBUG:root:[time:2] monster_visible is False
 ```
 
 
@@ -307,6 +324,11 @@ Today, we learned about Intelligent agent and we have built a very simple intell
 In the future, we will try to extend this agent to have more advanced features.
 I will also try to create a visualization for this agent.
 While it seems to be still far, this is my first step towards creating an Artificial Consciousness.
+
+
+## Source Code
+
+https://github.com/adamyordan/hunterAI/tree/master/alexander
 
 
 ## References

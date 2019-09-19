@@ -6,13 +6,12 @@
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="description" content="Today&amp;rsquo;s Goal In this article, I will try to make an intelligent agent that can hunt monster. I name this agent: Hunter.
+<meta name="description" content="Today&amp;rsquo;s Goal In this article, I will try to make an intelligent agent that can hunt monster. I name this agent: Hunter. (In the future, today&amp;rsquo;s version will be referenced as Alexander)
 Defining &amp;ldquo;Agent&amp;rdquo; How can we build something if we do not what it is?
-What is Agent? Agent is anything that can be viewed as: perceiving environment through sensors; and acting upon environment through actuators. It will run in cycles of perceiving, thinking, and acting.
-What is an Intelligent Agent?"/>
+What is Agent? Agent is anything that can be viewed as: perceiving environment through sensors; and acting upon environment through actuators. It will run in cycles of perceiving, thinking, and acting."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
-<link rel="canonical" href="https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/" />
+<link rel="canonical" href="https://labs.adamjordan.id/posts/003-creating-simple-intelligent-agent/" />
 
 
 
@@ -37,7 +36,7 @@ What is an Intelligent Agent?"/>
 <meta property="og:title" content="Creating Simple Intelligent Agent: HunterAI" />
 <meta property="og:description" content="Today, I try to make an intelligent agent that can hunt monster. I name this agent: **Hunter**. In this devlog, I will write the understanding and design process of a very simple intelligent agent." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/" />
+<meta property="og:url" content="https://labs.adamjordan.id/posts/003-creating-simple-intelligent-agent/" />
 <meta property="article:published_time" content="2019-09-16T00:00:00+00:00" />
 <meta property="article:modified_time" content="2019-09-16T00:00:00+00:00" /><meta property="og:site_name" content="Project:Labs" />
 
@@ -116,7 +115,7 @@ What is an Intelligent Agent?"/>
       <div class="content">
         
   <div class="post">
-    <h2 class="post-title"><a href="https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/">Creating Simple Intelligent Agent: HunterAI</a></h2>
+    <h2 class="post-title"><a href="https://labs.adamjordan.id/posts/003-creating-simple-intelligent-agent/">Creating Simple Intelligent Agent: HunterAI</a></h2>
     <div class="post-meta">
       
         <span class="post-date">
@@ -125,7 +124,7 @@ What is an Intelligent Agent?"/>
       
       <span class="post-author">— Written by Adam Jordan</span>
       
-        <span class="post-read-time">— 5 min read</span>
+        <span class="post-read-time">— 6 min read</span>
       
     </div>
 
@@ -151,7 +150,8 @@ What is an Intelligent Agent?"/>
 <h2 id="today-s-goal">Today&rsquo;s Goal</h2>
 
 <p>In this article, I will try to make an intelligent agent that can hunt monster.
-I name this agent: <strong>Hunter</strong>.</p>
+I name this agent: <strong>Hunter</strong>.
+(<em>In the future, today&rsquo;s version will be referenced as <strong>Alexander</strong></em>)</p>
 
 <h2 id="defining-agent">Defining &ldquo;Agent&rdquo;</h2>
 
@@ -198,6 +198,70 @@ The <strong>performance measure</strong> defines the criterion of success for an
 
 <p>$$f(P) = A$$</p>
 
+<h2 id="agent-interaction-concept">Agent Interaction Concept</h2>
+
+<p>I propose a concept idea of agent interaction as follow:</p>
+
+<ul>
+<li><p>Agent is represented as $\langle Program, Architecture \rangle$.</p></li>
+
+<li><p>Architecture is responsible for <strong>perceiving</strong> environment through <strong>sensors</strong> and <strong>acting</strong> upon environment through <strong>actuators</strong>.</p></li>
+
+<li><p><em>Percept</em> perceived by architecture is then passed to Agent Program.
+According to agent function, Agent Program then map the <em>percept</em> to an <em>action</em>.
+<em>Action</em> is then passed to Architecture.</p></li>
+
+<li><p>Environment is a representation that will be perceived and acted upon by architecture.</p></li>
+
+<li><p>Action is represented as $\langle id \rangle$, where $id$ is used to identify the type of the action.</p></li>
+
+<li><p>Percept is represented as $\langle state \rangle$, where $state$ is a key-value map containing the information perceived by sensor.</p></li>
+</ul>
+
+<p>Let&rsquo;s start by making a simple abstract code implementing the above concepts.</p>
+
+<pre><code class="language-python"># concepts.py
+
+class Environment:
+    pass
+
+
+class Action:
+    def __init__(self, id):
+        self.id = id
+
+
+class Percept:
+    def __init__(self, state):
+        self.state = state
+
+
+class Architecture:
+    def perceive(self, environment):
+        raise NotImplementedError()
+
+    def act(self, environment, action):
+        raise NotImplementedError()
+
+
+class Program:
+    def process(self, percept):
+        raise NotImplementedError()
+
+
+class Agent:
+    def __init__(self, program, architecture):
+        self.program = program
+        self.architecture = architecture
+
+    def step(self, environment):
+        percept = self.architecture.perceive(environment)
+        action = self.program.process(percept)
+        if action:
+            self.architecture.act(environment, action)
+
+</code></pre>
+
 <h2 id="designing-hunter-ai">Designing Hunter AI</h2>
 
 <p>I will try to build <strong>Hunter</strong> as an intelligent agent that will shoot an arrow when it find a monster.</p>
@@ -211,223 +275,174 @@ The <strong>performance measure</strong> defines the criterion of success for an
 <li><strong>S</strong>ensor: Hunter&rsquo;s vision</li>
 </ul>
 
-<h2 id="let-s-make-a-framework">Let&rsquo;s make a Framework</h2>
-
-<p>First, let&rsquo;s start by making a simple abstract framework implementing the above concepts.</p>
-
-<pre><code class="language-python"># framework.py
-
-class Action:
-    def __init__(self, id):
-        self.id = id
-
-
-class Perception:
-    def __init__(self, id, value):
-        self.id = id
-        self.value = value
-
-
-class Environment:
-    def __init__(self):
-        pass
-
-    def acted_upon(self, action):
-        pass
-
-    def step(self):
-        pass
-
-    def update(self, state):
-        pass
-
-
-class Architecture:
-    def __init__(self, environment):
-        self.environment = environment
-
-    def act(self, action):
-        '''
-        actuator function
-        '''
-        self.environment.acted_upon(action)
-
-    def perceive(self):
-        '''
-        sensors function
-        '''
-        raise NotImplementedError()
-
-
-class Agent:
-    def __init__(self, architecture):
-        self.architecture = architecture
-    
-    def process(self, perceptions):
-        '''
-        agent function, return Action
-        '''
-        pass
-
-    def step(self):
-        perceptions = self.architecture.perceive()
-        action = self.process(perceptions)
-        if action:
-            self.architecture.act(action)
-
-
-class World:
-    def __init__(self, environment, agents):
-        self.time = 0
-        self.environment = environment
-        self.agents = agents
-
-    def step(self):
-        self.time += 1
-        self.environment.step()
-        for agent in self.agents:
-            agent.step()
-</code></pre>
-
 <h2 id="let-s-start-simple">Let&rsquo;s start simple</h2>
 
-<p>Next, let&rsquo;s try implementing our <strong>Hunter</strong> world using this framework.
+<p>Let&rsquo;s try implementing our <strong>Hunter</strong> as a simple reflex agent.
 Because this is our first attempt, let&rsquo;s simplify things:</p>
 
 <ul>
 <li>There is one monster in battlefield.</li>
 <li>We only care about the monster visibility. We don&rsquo;t care about its position.</li>
-<li>When a monster appears / visible, hunter will react by shooting it.</li>
+<li>When a monster is visible, hunter will react by shooting it.</li>
 <li>When a monster got hit, it will disappear.</li>
 </ul>
 
 <p>I know that this looks oversimplified and seems very easy.
 But this is important as our building foundation.</p>
 
-<p>First, Let&rsquo;s define the action: <strong>Shooting action</strong>.</p>
+<p>First, let&rsquo;s define our environment.
+According to our simplification, there is only one state attribute: <code>monster_visible</code>.</p>
 
-<pre><code class="language-python"># hunterAI.py
+<pre><code class="language-python"># environment.py
 
-from framework import Action, Perception, Environment, Architecture, Agent, World
+from .concepts import Environment
 
-ACTION_SHOOT = Action('shoot')
-</code></pre>
 
-<p>Next, let&rsquo;s define the environment.
-As with our simplification, there is only one state: <code>monster_visible</code>.
-If <code>ACTION_SHOOT</code> is acted upon this environment, the monster will disappear, thus setting <code>monster_visible</code> to <code>False</code>.</p>
-
-<pre><code class="language-python">class HunterEnv(Environment):
+class HunterEnvironment(Environment):
     def __init__(self):
         self.monster_visible = False
-
-    def acted_upon(self, action):
-        if action == ACTION_SHOOT:
-            print('[+] Pew! Hunter shoots the monster')
-            self.update({ 'monster_visible': False })
-
-    def update(self, state):
-        if 'monster_visible' in state:
-            self.monster_visible = state['monster_visible']
 </code></pre>
 
-<p>Next, let&rsquo;s define our agent architecture.
-There is nothing changet at actuator function.
-For the sensor function, we need to parse the <code>monster_visible</code> state from our environment.
-This state is the perception that will be passed to our agent program.</p>
+<p>Next, let&rsquo;s define our Hunter&rsquo;s Agent program.
+According to our simplification, when the agent perceives that a monster is visible, it will do shooting action.</p>
 
-<pre><code class="language-python">class HunterArch(Architecture):
-    def perceive(self):
-        monster_visible = self.environment.monster_visible
-        return [Perception('monster_visible', monster_visible)]
-</code></pre>
+<pre><code class="language-python"># program.py
 
-<p>Finally, let&rsquo;s define our agent program.
-As will our simplification, when the agent perceives that a monster is visible, it will do shooting action.</p>
+from .concepts import Action, Program
 
-<pre><code class="language-python">class HunterAgent(Agent):
-    def process(self, perceptions):
-        if len(perceptions) == 0:
-            return None
-        perception = perceptions[0]
-        if perception.id == 'monster_visible' and perception.value == True:
-            return ACTION_SHOOT
+
+class HunterProgram(Program):
+    def process(self, percept):
+        if percept.state['monster_visible'] is True:
+            return Action('shoot')
         else:
             return None
 </code></pre>
 
-<p>And some helpers function:</p>
+<p>Next, let&rsquo;s define our Architecture.
+Perceiving is simple, it will check the <code>monster_visible</code> attribute of the environment.
+If shooting action is acted upon this environment, the monster will disappear, thus setting <code>monster_visible</code> to <code>False</code>.</p>
 
-<pre><code class="language-python">def initiate():
-    print('[+] Creating environment')
-    env = HunterEnv()
+<pre><code class="language-python"># architecture.py
 
-    print('[+] Creating architecture')
-    arch = HunterArch(environment=env)
-
-    print('[+] Creating agent')
-    hunter = HunterAgent(architecture=arch)
-
-    print('[+] Creating world')
-    world = World(environment=env, agents=[hunter])
-
-    return world, hunter
+from .concepts import Architecture, Percept
+import logging
 
 
-def debug(world):
-    print('[+] DEBUG: ({}) monster_visible: {}'.format(world.time, world.environment.monster_visible))
+class HunterArchitecture(Architecture):
+    def perceive(self, environment):
+        return Percept({'monster_visible': environment.monster_visible})
+
+    def act(self, environment, action):
+        if action.id == 'shoot':
+            logging.debug('Pew! Shooting monster')
+            environment.monster_visible = False
 </code></pre>
 
-<h2 id="running-our-agent">Running our agent</h2>
+<p>So far, we have already finished implementing our agent program and architecure.
+And this is sufficient to say that we already finished implementing our agent.
+Our agent can be instantiated with the following code:</p>
 
-<p>Now that we finished programming our intelligent agent, let&rsquo;s run and play around with it.</p>
+<pre><code class="language-python">program = HunterProgram()
+architecture = HunterArchitecture()
+agent = Agent(program, architecture)
+</code></pre>
 
-<p>Spawn a python interpreter, and import our <code>hunterAI.py</code> programs.</p>
+<p>However, currently we don&rsquo;t have any way to run and test our agent.
+Let&rsquo;s make a simulator to run this agent.</p>
+
+<pre><code class="language-python"># simulator.py
+
+from .concepts import Agent
+from .architecture import HunterArchitecture
+from .program import HunterProgram
+from .environment import HunterEnvironment
+import logging
+import os
+import time
+
+
+class Simulator:
+    def __init__(self, environment, agents):
+        self.environment = environment
+        self.agents = agents
+        self.time = 0
+
+    def step(self):
+        for agent in self.agents:
+            agent.step(self.environment)
+        self.time += 1
+
+    def debug(self):
+        logging.debug('monster_visible is %s', self.environment.monster_visible)
+
+    @staticmethod
+    def instantiate():
+        environment = HunterEnvironment()
+
+        program = HunterProgram()
+        architecture = HunterArchitecture()
+        agent = Agent(program, architecture)
+
+        return Simulator(environment, [agent])
+</code></pre>
+
+<p>Our simulator class represents a <em>world</em> where our agent is running.
+As you may realize, We have not yet defined what a <em>world</em> is.
+Let&rsquo;s define <strong>world</strong> as a triplet $\langle time, environment, agents \rangle$, where $time$ is an increasing number that represents a moment in the world.
+A <em>world</em> contains an $environment$ and a list of agent ($agents$) that will interact with the environment.</p>
+
+<p>A moment in the world can be moved forward by calling <code>step()</code> function.
+When stepping, the agents will start processing the environment, perceiving and acting upon it; and the time will increase.</p>
+
+<h2 id="running-our-agent-with-simulator">Running our agent with simulator</h2>
+
+<p>Now that we finished programming our intelligent agent and simulator, let&rsquo;s run and play around with them.</p>
+
+<p>Spawn a python interpreter, and import our <code>simulator.py</code> programs.</p>
 
 <pre><code class="language-python">$ python3
 
-&gt;&gt;&gt; from hunterAI import *
+&gt;&gt;&gt; from simulator import *
 
-&gt;&gt;&gt; world, hunter = initiate()
-[+] Creating environment
-[+] Creating architecture
-[+] Creating agent
-[+] Creating world
+&gt;&gt;&gt; logging.basicConfig(level='DEBUG')
 
-&gt;&gt;&gt; debug(world)
-[+] DEBUG: (0) monster_visible: False
+&gt;&gt;&gt; simulator = Simulator.instantiate()
+
+&gt;&gt;&gt; simulator.debug()
+DEBUG:root:[time:0] monster_visible is False
 </code></pre>
 
-<p>We step one time unit period in our program by calling <code>world.step()</code>.</p>
+<p>We step one time unit period in our world simulator by calling <code>simulator.step()</code>.</p>
 
-<pre><code class="language-python">&gt;&gt;&gt; world.step()
+<pre><code class="language-python">&gt;&gt;&gt; simulator.step()
 
 &gt;&gt;&gt; debug(world)
-[+] DEBUG: (1) monster_visible: False
+DEBUG:root:[time:1] monster_visible is False
 </code></pre>
 
 <p>Let&rsquo;s try updating the environment.
 We want to see if our agent react accordingly when a monster appears.</p>
 
 <pre><code class="language-python">&gt;&gt;&gt; debug(world)
-[+] DEBUG: (1) monster_visible: False
+DEBUG:root:[time:1] monster_visible is False
 
-&gt;&gt;&gt; world.environment.update({ 'monster_visible': True })
+&gt;&gt;&gt; simulator.environment.monster_visible = True
 
 &gt;&gt;&gt; debug(world)
-[+] DEBUG: (1) monster_visible: True
+DEBUG:root:[time:1] monster_visible is True
 </code></pre>
 
 <p>After running step, we will see that our <strong>Hunter</strong> should shoot the monster.</p>
 
 <pre><code class="language-python">&gt;&gt;&gt; debug(world)
-[+] DEBUG: (1) monster_visible: True
+DEBUG:root:[time:1] monster_visible is False
 
-&gt;&gt;&gt; world.step()
-[+] Pew! Hunter shoots the monster
+&gt;&gt;&gt; simulator.step()
+DEBUG:root:Pew! Shooting monster
 
 &gt;&gt;&gt; debug(world)
-[+] DEBUG: (2) monster_visible: False
+DEBUG:root:[time:2] monster_visible is False
 </code></pre>
 
 <h2 id="conclusion">Conclusion</h2>
@@ -436,6 +451,10 @@ We want to see if our agent react accordingly when a monster appears.</p>
 In the future, we will try to extend this agent to have more advanced features.
 I will also try to create a visualization for this agent.
 While it seems to be still far, this is my first step towards creating an Artificial Consciousness.</p>
+
+<h2 id="source-code">Source Code</h2>
+
+<p><a href="https://github.com/adamyordan/hunterAI/tree/master/alexander">https://github.com/adamyordan/hunterAI/tree/master/alexander</a></p>
 
 <h2 id="references">References</h2>
 
@@ -456,7 +475,7 @@ While it seems to be still far, this is my first step towards creating an Artifi
           
           
             <span class="button next">
-              <a href="https://labs.adamjordan.id/posts/the-easy-problems-of-consciousness/">
+              <a href="https://labs.adamjordan.id/posts/002-the-easy-problems-of-consciousness/">
                 <span class="button__text">The Easy Problems of Consciousness</span>
                 <span class="button__icon">→</span>
               </a>

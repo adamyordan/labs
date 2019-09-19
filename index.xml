@@ -13,22 +13,21 @@
     
     <item>
       <title>Creating Simple Intelligent Agent: HunterAI</title>
-      <link>https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/</link>
+      <link>https://labs.adamjordan.id/posts/003-creating-simple-intelligent-agent/</link>
       <pubDate>Mon, 16 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://labs.adamjordan.id/posts/creating-simple-intelligent-agent/</guid>
-      <description>Today&amp;rsquo;s Goal In this article, I will try to make an intelligent agent that can hunt monster. I name this agent: Hunter.
+      <guid>https://labs.adamjordan.id/posts/003-creating-simple-intelligent-agent/</guid>
+      <description>Today&amp;rsquo;s Goal In this article, I will try to make an intelligent agent that can hunt monster. I name this agent: Hunter. (In the future, today&amp;rsquo;s version will be referenced as Alexander)
 Defining &amp;ldquo;Agent&amp;rdquo; How can we build something if we do not what it is?
-What is Agent? Agent is anything that can be viewed as: perceiving environment through sensors; and acting upon environment through actuators. It will run in cycles of perceiving, thinking, and acting.
-What is an Intelligent Agent?</description>
+What is Agent? Agent is anything that can be viewed as: perceiving environment through sensors; and acting upon environment through actuators. It will run in cycles of perceiving, thinking, and acting.</description>
     </item>
     
     <item>
       <title>The Easy Problems of Consciousness</title>
-      <link>https://labs.adamjordan.id/posts/the-easy-problems-of-consciousness/</link>
+      <link>https://labs.adamjordan.id/posts/002-the-easy-problems-of-consciousness/</link>
       <pubDate>Sat, 14 Sep 2019 13:44:52 +0800</pubDate>
       
-      <guid>https://labs.adamjordan.id/posts/the-easy-problems-of-consciousness/</guid>
+      <guid>https://labs.adamjordan.id/posts/002-the-easy-problems-of-consciousness/</guid>
       <description>In Facing Up to the Problem of Consciousness (1955), the philosopher David Chalmers introduced the term “hard problem” of consciousness, in contrasts with the “easy problems”.
  The really hard problem of consciousness is the problem of experience. When we think and perceive there is a whir of information processing, but there is also a subjective aspect.
  The Hard Problem concerns about the explaining how it is that a physical system can have vivid experiences with seemingly intrinsic qualities (qualia).</description>
@@ -46,10 +45,10 @@ Project:Labs We define Labs as a research-centric entity with focus is in techno
     
     <item>
       <title>Artificial Consciousness</title>
-      <link>https://labs.adamjordan.id/posts/artificial-consciousness/</link>
+      <link>https://labs.adamjordan.id/posts/001-artificial-consciousness/</link>
       <pubDate>Fri, 13 Sep 2019 19:23:04 +0800</pubDate>
       
-      <guid>https://labs.adamjordan.id/posts/artificial-consciousness/</guid>
+      <guid>https://labs.adamjordan.id/posts/001-artificial-consciousness/</guid>
       <description>This is a placeholder for the first post in this blog. This placeholder marks the starting point of one project: Artificial Consciousness.
 Artificial consciousness (AC) is a field related to artificial intelligence and cognitive robotics. The aim of the theory of artificial consciousness is to &amp;ldquo;Define that which would have to be synthesized were consciousness to be found in an engineered artifact&amp;rdquo; (Aleksander 1995).
 Artificial consciousness concepts are also pondered in the philosophy of artificial intelligence through questions about mind, consciousness, and mental states.</description>

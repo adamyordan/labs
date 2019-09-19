@@ -27,6 +27,7 @@ cd public && git add --all && git commit -m "Publish - $(date)"
 #echo "Pushing to github"
 #git push --all
 
+echo
 echo "Please manually do the last step: Push to branch gh-pages"
 echo
 echo "cd public && git push"

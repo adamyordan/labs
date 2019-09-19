@@ -2,6 +2,7 @@ baseurl = "https://labs.adamjordan.id/"
 languageCode = "en-us"
 theme = "hello-friend"
 paginate = 5
+disqusShortname = "project-labs"
 
 [params]
   contentTypeName = "posts"
